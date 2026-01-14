@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -20,14 +14,42 @@ model User {
   email String  @unique
   password String
   name  String?
-  posts Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // Relationships
+  boards    Board[]  // ผู้ใช้คนนี้เป็นเจ้าของบอร์ดอะไรบ้าง
+  tasks     Task[]   // ผู้ใช้คนนี้ได้รับมอบหมายงานอะไรบ้าง (Assignee)
 }
 
-model Post {
-  id        Int      @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Board {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // Relationships
+  userId      Int      // Foreign Key ของเจ้าของบอร์ด
+  user        User     @relation(fields: [userId], references: [id])
+  tasks       Task[]   // ในบอร์ดนี้มีงานอะไรบ้าง
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO) // ใช้ Enum แทน String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // Relationships 1: งานนี้อยู่บนบอร์ดไหน 
+  boardId     Int
+  board       Board    @relation(fields: [boardId], references: [id])
+  // Relationships 2: ใครรับผิดชอบงานนี้ (Optional - งานอาจจะยังไม่มีคนทำก็ได้)
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id])
+}
+
+enum TaskStatus {
+  TODO
+  DOING
+  DONE
 }
