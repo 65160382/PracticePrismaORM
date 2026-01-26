@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma.module';
 import { UsersModule } from './users/users.module';
 import { BoardModule } from './board/board.module';
 import { TaskModule } from './task/task.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { TaskModule } from './task/task.module';
       isGlobal:true
     }),
     UsersModule, 
-    PrismaModule, BoardModule, TaskModule],
+    PrismaModule, BoardModule, TaskModule, AuthModule],
   controllers: [AppController],
   providers: [AppService,],
 })

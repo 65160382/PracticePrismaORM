@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma.service';
 export class BoardService {
   constructor(private prisma: PrismaService) {}
   async create(createBoardDto: CreateBoardDto) {
+    // console.log("debug dto", createBoardDto)
     await this.prisma.board.create({ data: createBoardDto });
     return { info: 'บันทึกข้อมูลสำเร็จ!' };
   }

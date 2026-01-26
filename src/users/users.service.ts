@@ -28,4 +28,9 @@ export class UsersService {
   remove(id: number) {
     return this.prisma.user.delete({ where: {id}})
   }
+
+  // หา User
+  async findByEmail(email: string){
+    return await this.prisma.user.findUnique({ where: {email}})
+  }
 }
