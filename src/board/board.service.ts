@@ -12,9 +12,9 @@ export class BoardService {
     return { info: 'บันทึกข้อมูลสำเร็จ!' };
   }
 
-  async findAll() {
+  async findAll(userId:number) {
     try {
-      const result = await this.prisma.board.findMany();
+      const result = await this.prisma.board.findMany({where: {userId:userId}});
       if (result.length > 0) { 
       return result;
     } else {

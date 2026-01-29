@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BoardService } from './board.service';
@@ -24,8 +25,8 @@ export class BoardController {
   }
 
   @Get()
-  findAll() {
-    return this.boardService.findAll();
+  findAll(@Query('userId') userId:number) {
+    return this.boardService.findAll(userId);
   }
 
   @Get(':id')

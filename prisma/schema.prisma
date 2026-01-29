@@ -1,7 +1,7 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-  moduleFormat    = "cjs"
+  provider     = "prisma-client-js"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -10,15 +10,15 @@ datasource db {
 
 // test
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  password String
-  name  String?
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   // Relationships
-  boards    Board[]  // ผู้ใช้คนนี้เป็นเจ้าของบอร์ดอะไรบ้าง
-  tasks     Task[]   // ผู้ใช้คนนี้ได้รับมอบหมายงานอะไรบ้าง (Assignee)
+  boards    Board[] // ผู้ใช้คนนี้เป็นเจ้าของบอร์ดอะไรบ้าง
+  tasks     Task[] // ผู้ใช้คนนี้ได้รับมอบหมายงานอะไรบ้าง (Assignee)
 }
 
 model Board {
@@ -28,28 +28,35 @@ model Board {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   // Relationships
-  userId      Int      // Foreign Key ของเจ้าของบอร์ด
+  userId      Int // Foreign Key ของเจ้าของบอร์ด
   user        User     @relation(fields: [userId], references: [id])
-  tasks       Task[]   // ในบอร์ดนี้มีงานอะไรบ้าง
+  tasks       Task[] // ในบอร์ดนี้มีงานอะไรบ้าง
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   title       String
   description String?
-  status      TaskStatus @default(TODO) // ใช้ Enum แทน String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status      TaskStatus   @default(TODO) // ใช้ Enum แทน String
+  priority    TaskPriority @default(LOW)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   // Relationships 1: งานนี้อยู่บนบอร์ดไหน 
   boardId     Int
-  board       Board    @relation(fields: [boardId], references: [id])
+  board       Board        @relation(fields: [boardId], references: [id])
   // Relationships 2: ใครรับผิดชอบงานนี้ (Optional - งานอาจจะยังไม่มีคนทำก็ได้)
   userId      Int?
-  user        User?    @relation(fields: [userId], references: [id])
+  user        User?        @relation(fields: [userId], references: [id])
 }
 
 enum TaskStatus {
   TODO
   DOING
   DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
 }
